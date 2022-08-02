@@ -80,6 +80,10 @@ function createTasklist(taskListName){
   return newTaskList.id
 }
 
+function test(){
+  syncCompletedTask('UWxCS3dlUnBjMldTZzRpMA', 'Complete enrollment,Follow up later,Select date and time for 3 way call')
+}
+
 function syncCompletedTask(taskListID, newTask_nextActions_commaSeperated){
   let tasks = Tasks.Tasks.list(taskListID),
     newTask_nextActions = newTask_nextActions_commaSeperated.split(',');
@@ -113,7 +117,8 @@ function syncCompletedTask(taskListID, newTask_nextActions_commaSeperated){
         {
           kind: 'tasks#task',
           id: tasks.items[x].id,
-          status: 'completed'
+          status: 'completed',
+          title: tasks.items[x].title
         }, 
         taskListID, 
         tasks.items[x].id
@@ -126,6 +131,18 @@ function syncCompletedTask(taskListID, newTask_nextActions_commaSeperated){
 
       for(const taskElem of Tasks.Tasks.list(taskListID).items){
         if(taskElem.title === elem){
+          Tasks.Tasks.update(
+            {
+              kind: 'tasks#task',
+              id: taskElem.id,
+              title: taskElem.title,
+              completed: ''
+            }, 
+            taskListID, 
+            taskElem.id
+          )
+          Logger.log(taskElem)
+
           isTaskNew = false
           break
         }
@@ -143,7 +160,3 @@ function syncCompletedTask(taskListID, newTask_nextActions_commaSeperated){
 
 
 }
-
-
-
-
